@@ -12,12 +12,12 @@ from iterm2_dwim.parser import get_path_and_line
 Editor = emacs.Editor
 
 
-def notify(message):
+def notify(exception):
     subprocess.check_call([
         '/usr/local/bin/terminal-notifier',
         '-title', 'iterm2-dwim',
-        '-subtitle', 'Error',
-        '-message', message,
+        '-subtitle', exception.__class__.__name__,
+        '-message', str(exception),
     ])
 
 
@@ -26,8 +26,8 @@ def notification_on_error():
     try:
         yield
     except Exception as ex:
+        notify(ex)
         msg = '%s: %s\n' % (type(ex).__name__, ex)
-        notify(msg)
         log(msg)
         exit(1)
 
@@ -42,7 +42,7 @@ def main():
 
         if not os.path.exists(path):
             msg = 'Path does not exist: %s' % path
-            notify(msg)
+            notify(Exception(msg))
             log(msg)
             exit(1)
 
