@@ -1,14 +1,15 @@
 #!/usr/bin/env python
-from datetime import datetime
 from contextlib import contextmanager
 import os
 import re
 import subprocess
 import sys
 
+from iterm2_dwim.editors import emacs
+from iterm2_dwim.logger import log
 
-LOG = '/tmp/iterm2-dwim.log'
-EMACSCLIENT = '/usr/local/bin/emacsclient'
+
+Editor = emacs.Editor
 
 
 def notify(message):
@@ -17,13 +18,6 @@ def notify(message):
         '-title', 'Error',
         '-message', message,
     ])
-
-
-def log(line):
-    time = datetime.now().isoformat(' ').split('.')[0]
-    with open(LOG, 'a') as fp:
-        fp.write('%s %s\n' % (time, line))
-        fp.flush()
 
 
 @contextmanager
@@ -64,21 +58,9 @@ def get_path_and_line(path, text_after):
     return path, line
 
 
-def edit_file(path, line):
-    cmd = [
-        EMACSCLIENT,
-        '--no-wait',
-        '--eval', '(find-file "%s")' % path,
-        '--eval', '(select-frame-set-input-focus (selected-frame))',
-        '--eval', '(goto-line %d)' % line,
-    ]
-    log(cmd)
-    subprocess.check_call(cmd)
-
-
 def main():
     with notification_on_error():
         path, line = get_path_and_line(*sys.argv[1:])
 
     with notification_on_error():
-        edit_file(path, line)
+        Editor().edit_file(path, line)
