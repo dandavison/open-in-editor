@@ -34,7 +34,7 @@ def notification_on_error():
 
 def main():
     with notification_on_error():
-        log('sys.argv: %s' % ' '.join(sys.argv))
+        log('\nsys.argv: %s' % ' '.join(sys.argv))
 
         path, line = get_path_and_line(*sys.argv[1:])
 
