@@ -8,8 +8,6 @@ Currently, the only implemented editor backend is Emacs.
 
 ### Installation
 
-1. Clone this repo and run `python setup.py develop`.
-
 1. Run `brew install terminal-notifier` and check it's working with `terminal-notifier -message hello`.
 
 1. Make sure that you are starting the emacs server in your emacs config file:
@@ -17,6 +15,8 @@ Currently, the only implemented editor backend is Emacs.
     (require 'server)
     (unless (server-running-p) (server-start))
     ```
+
+1. Clone this repo and run `python setup.py develop`.
 
 1. Find the absolute path to the `iterm2-dwim` executable, by running the command `which iterm2-dwim`. For example, on my system, this is `/usr/local/bin/iterm2-dwim`.
 
