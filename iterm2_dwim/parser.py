@@ -10,43 +10,80 @@ from iterm2_dwim.logger import log
 CWD_FILE = '/tmp/cwd'
 
 
-def get_path_and_line(path, text_after):
-    if not path.startswith('/') and text_after.startswith('/'):
-        # Hack: relative path followed by directory
-        # SmartSelection path regex passing \0 \d
-        try:
-            with open(CWD_FILE) as fp:
-                cwd = fp.read().strip()
-        except IOError:
-            raise ParseError(
-                'Got path: %s\n'
-                'Interpreting as relative path, but current working '
-                'directory unknown.'
-            )
-        else:
-            return os.path.join(cwd, path), 1
+class ParseError(Exception):
+    pass
 
-    path = re.sub('\.pyc$', '.py', path)
-    match = (
-        # python stack trace, e.g.
-        # File "/path/to/somefile.py", line 336, in some_function
-        re.match(r'[^"]*", line (\d+).*', text_after) or
-        # ipdb stack trace
-        # > /path/to/somefile.py(336)some_function()
-        # Fails for
-        # /home/dan/nfs-share/website/counsyl/product/data_entry/tests/__init__.py(1005)assertKey()
-        re.match(r'[^(]*\((\d+)\).*', text_after) or
-        # counsyl/product/api/utils/fake.py:18:1:
-        re.match(r'[^:]*:(\d+):\d+:[^:]*', text_after)
-    )
-    if not match:
-        line = 1
-        log('%s (no line number)' % path)
-        log(path)
-        log(text_after)
+
+def relative_path(path, text_after):
+    """
+    Relative path followed by directory.
+
+    This would be via a SmartSelection path regex.
+    """
+    if path.startswith('/'):
+        raise ParseError
+
+    try:
+        with open(CWD_FILE) as fp:
+            cwd = fp.read().strip()
+    except IOError:
+        raise ParseError(
+            'Got path: %s\n'
+            'Interpreting as relative path, but current working '
+            'directory unknown.'
+        )
     else:
-        (line,) = match.groups()
-        line = int(line)
-        log('%s:%d' % (path, line))
+        return os.path.join(cwd, path), 1
 
+
+def python_stack_trace(path, text_after):
+    # python stack trace, e.g.
+    # File "/path/to/somefile.py", line 336, in some_function
+    regex = r'[^"]*", line (\d+).*'
+    line = _parse_line_number(regex, text_after)
     return path, line
+
+
+def ipdb_stack_trace(path, text_after):
+    # ipdb stack trace
+    # > /path/to/somefile.py(336)some_function()
+    # Fails for
+    # /home/dan/nfs-share/website/counsyl/product/data_entry/tests/__init__.py(1005)assertKey()
+    regex = r'[^(]*\((\d+)\).*'
+    line = _parse_line_number(regex, text_after)
+    return path, line
+
+
+def line_and_column(path, text_after):
+    # counsyl/product/api/utils/fake.py:18:1:
+    regex = r'[^:]*:(\d+):\d+:[^:]*'
+    line = _parse_line_number(regex, text_after)
+    return path, line
+
+
+def _parse_line_number(regex, text):
+    match = re.match(regex, text)
+    if not match:
+        raise ParseError()
+    (line,) = match.groups()
+    return int(line)
+
+
+PARSERS = [
+    relative_path,
+    python_stack_trace,
+    ipdb_stack_trace,
+    line_and_column,
+]
+
+
+def get_path_and_line(path, text_after):
+    path = re.sub('\.pyc$', '.py', path)
+
+    for parse_fn in PARSERS:
+        try:
+            return parse_fn(path, text_after)
+        except ParseError:
+            continue
+
+    return path, 1
