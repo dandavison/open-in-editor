@@ -6,7 +6,7 @@ import sys
 
 from iterm2_dwim.editors import emacs
 from iterm2_dwim.logger import log
-from iterm2_dwim.parser import get_path_and_line
+from iterm2_dwim.parsers import get_path_and_line
 
 
 Editor = emacs.Editor

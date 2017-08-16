@@ -1,8 +1,6 @@
 import os
 import re
 
-from iterm2_dwim.logger import log
-
 
 # For relative paths to be handled, add something like the following to shell
 # prompt function to inform iterm2-dwim of the current directory:
@@ -75,15 +73,3 @@ PARSERS = [
     ipdb_stack_trace,
     line_and_column,
 ]
-
-
-def get_path_and_line(path, text_after):
-    path = re.sub('\.pyc$', '.py', path)
-
-    for parse_fn in PARSERS:
-        try:
-            return parse_fn(path, text_after)
-        except ParseError:
-            continue
-
-    return path, 1
