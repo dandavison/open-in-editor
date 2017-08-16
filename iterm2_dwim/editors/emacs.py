@@ -3,14 +3,12 @@ import subprocess
 from iterm2_dwim.logger import log
 
 
-EMACSCLIENT = '/usr/local/bin/emacsclient'
-
-
 class Editor(object):
 
     def edit_file(self, path, line):
+        emacsclient = subprocess.check_output(['which', 'emacsclient']).strip()
         cmd = [
-            EMACSCLIENT,
+            emacsclient,
             '--no-wait',
             '--eval', '(find-file "%s")' % path,
             '--eval', '(select-frame-set-input-focus (selected-frame))',
