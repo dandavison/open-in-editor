@@ -59,6 +59,13 @@ def line_and_column(path, text_after):
     return path, line
 
 
+def git_diff_path(path, text_after):
+    if not (path.startswith('a/') or
+            path.startswith('b/')):
+        raise ParseError
+    return relative_path(path[2:], None)
+
+
 def _parse_line_number(regex, text):
     match = re.match(regex, text)
     if not match:
@@ -72,4 +79,5 @@ PARSERS = [
     python_stack_trace,
     ipdb_stack_trace,
     line_and_column,
+    git_diff_path,
 ]
