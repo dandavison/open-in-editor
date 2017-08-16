@@ -14,7 +14,8 @@ Editor = emacs.Editor
 def notify(message):
     subprocess.check_call([
         '/usr/local/bin/terminal-notifier',
-        '-title', 'Error',
+        '-title', 'iterm2-dwim',
+        '-subtitle', 'Error',
         '-message', message,
     ])
 
