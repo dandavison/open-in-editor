@@ -1,9 +1,15 @@
+import os
 import re
 
 from iterm2_dwim.logger import log
 
 
 def get_path_and_line(path, text_after):
+    if not path.startswith('/') and text_after.startswith('/'):
+        # Hack: relative path followed by directory
+        # SmartSelection path regex passing \0 \d
+        return os.path.join(text_after, path), 1
+
     path = re.sub('\.pyc$', '.py', path)
     match = (
         # python stack trace, e.g.
