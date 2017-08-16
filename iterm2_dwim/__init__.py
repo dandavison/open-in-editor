@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from contextlib import contextmanager
+import os
 import subprocess
 import sys
 
@@ -38,5 +39,11 @@ def main():
         path, line = get_path_and_line(*sys.argv[1:])
 
         log('Got path and line: %s %d' % (path, line))
+
+        if not os.path.exists(path):
+            msg = 'Path does not exist: %s' % path
+            notify(msg)
+            log(msg)
+            exit(1)
 
         Editor().edit_file(path, line)
