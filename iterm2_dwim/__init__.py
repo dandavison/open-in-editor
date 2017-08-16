@@ -33,7 +33,10 @@ def notification_on_error():
 
 def main():
     with notification_on_error():
+        log('sys.argv: %s' % ' '.join(sys.argv))
+
         path, line = get_path_and_line(*sys.argv[1:])
 
-    with notification_on_error():
+        log('Got path and line: %s %d' % (path, line))
+
         Editor().edit_file(path, line)
