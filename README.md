@@ -3,8 +3,7 @@ you command-click on a file name in the iTerm2 terminal window, and it opens the
 If there was a line number, your editor goes to that line.
 So, compiler output, tracebacks, etc.
 
-Currently, the only implemented editor backend is Emacs.
-
+Currently, Emacs and Sublime are supported. To select an editor, enter "emacs" or "sublime" as the editor in "settings.py" and enter the path to `emacsclient` or `subl`.
 
 ### Installation
 

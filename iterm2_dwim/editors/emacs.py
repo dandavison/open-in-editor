@@ -1,17 +1,18 @@
-import re
 import subprocess
 
 from iterm2_dwim.logger import log
 
+from iterm2_dwim.editors.base_editor import BaseEditor
+from iterm2_dwim.settings import path_to_emacsclient
 
-class Editor(object):
+
+class Emacs(BaseEditor):
 
     def __init__(self, path, line):
-        self.path = re.sub('\.pyc$', '.py', path)
-        self.line = line
+        super(Emacs, self).__init__(path, line)
 
     def visit_file(self):
-        emacsclient = subprocess.check_output(['which', 'emacsclient']).strip()
+        emacsclient = path_to_emacsclient
         cmd = [
             emacsclient,
             '--no-wait',

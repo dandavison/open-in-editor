@@ -4,12 +4,13 @@ import os
 import subprocess
 import sys
 
-from iterm2_dwim.editors import emacs
+from iterm2_dwim.editors import emacs, sublime
+from iterm2_dwim.settings import editor
 from iterm2_dwim.logger import log
 from iterm2_dwim.parsers import get_path_and_line
 
 
-Editor = emacs.Editor
+Editor = sublime.Sublime if editor.lower() == 'sublime' else emacs.Emacs
 
 
 def notify(exception):
