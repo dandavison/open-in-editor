@@ -3,6 +3,7 @@ from contextlib import contextmanager
 import os
 import subprocess
 import sys
+import traceback
 
 from iterm2_dwim.editors import emacs, sublime
 from iterm2_dwim.settings import editor
@@ -28,8 +29,7 @@ def notification_on_error():
         yield
     except Exception as ex:
         notify(ex)
-        msg = '%s: %s\n' % (type(ex).__name__, ex)
-        log(msg)
+        log(traceback.format_exc())
         exit(1)
 
 

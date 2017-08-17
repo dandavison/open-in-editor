@@ -20,5 +20,5 @@ class Emacs(BaseEditor):
             '--eval', '(select-frame-set-input-focus (selected-frame))',
             '--eval', '(goto-line %d)' % self.line,
         ]
-        log(cmd)
+        log(' '.join(cmd))
         subprocess.check_call(cmd)
