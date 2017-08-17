@@ -5,6 +5,19 @@ So, compiler output, tracebacks, etc.
 
 Currently, the only implemented editor backend is Emacs.
 
+### Features
+
+The following path-like patterns are supported. For the ones with line numbers, the file will be opened at that line.
+
+| Pattern                                                   | Type                         | Status |
+|-----------------------------------------------------------|------------------------------|--------|
+| `/absolute/path/to/file`                                  | Absolute path                | ✅     |
+| `relative/path/to/file`                                   | Relative path                | ✅     |
+| `relative/path/to/file:336:1:`                            | Compiler / Linter etc output | ❌     |
+| `a/relative/path/to/file`                                 | In git diff output           | ✅     |
+| `"/absolute/path/to/file.py", line 336, in some_function` | Python stack traces          | ✅     |
+| `> /path/to/file.py(336)some_function()`                  | Python ipdb output           | ✅     |
+
 
 ### Installation
 
@@ -39,7 +52,6 @@ Your iTerm2 settings should look something like this:
 <img width=600px src="https://user-images.githubusercontent.com/52205/29363274-9e49ba80-828f-11e7-8c80-8790c53ed031.png" alt="image" />
 
 <img width=600px src="https://user-images.githubusercontent.com/52205/29406054-2df3f8b6-8340-11e7-9996-64a0f873da5c.png" alt="image" />
-
 
 ### Debugging
 
