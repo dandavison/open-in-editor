@@ -1,6 +1,8 @@
 import os
 import re
 
+from iterm2_dwim.logger import log
+
 
 # For relative paths to be handled, add something like the following to shell
 # prompt function to inform iterm2-dwim of the current directory:

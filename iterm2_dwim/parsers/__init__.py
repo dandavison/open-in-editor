@@ -1,19 +1,20 @@
-import re
+import os
 
 from iterm2_dwim.logger import log
 from iterm2_dwim.parsers.parsers import PARSERS
 from iterm2_dwim.parsers.parsers import ParseError
 
 
-def get_path_and_line(path, text_after):
-    path = re.sub('\.pyc$', '.py', path)
-
+def get_path_and_line(path_text, text_after):
     for parse_fn in PARSERS:
-        log(parse_fn.__name__)
         try:
-            return parse_fn(path, text_after)
+            path, line = parse_fn(path_text, text_after)
         except ParseError as ex:
-            log(ex)
             continue
+        else:
+            if os.path.exists(path):
+                return path, line
 
-    return path, 1
+    assert os.path.exists(path_text)
+
+    return path_text, 1

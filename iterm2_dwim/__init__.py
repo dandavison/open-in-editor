@@ -40,10 +40,4 @@ def main():
 
         log('Got path and line: %s %d' % (path, line))
 
-        if not os.path.exists(path):
-            msg = 'Path does not exist: %s' % path
-            notify(Exception(msg))
-            log(msg)
-            exit(1)
-
-        Editor().edit_file(path, line)
+        Editor(path, line).visit_file()
