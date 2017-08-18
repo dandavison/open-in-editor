@@ -1,9 +1,9 @@
 import re
 import subprocess
 
+from iterm2_dwim.editors.base_editor import BaseEditor
 from iterm2_dwim.logger import log
 
-from iterm2_dwim.editors.base_editor import BaseEditor
 
 
 class Sublime(BaseEditor):
