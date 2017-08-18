@@ -1,7 +1,7 @@
 import re
 import subprocess
 
-from iterm2_dwim.editors.base_editor import BaseEditor
+from iterm2_dwim.editors.base import BaseEditor
 from iterm2_dwim.logger import log
 
 
