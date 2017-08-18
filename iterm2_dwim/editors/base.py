@@ -6,5 +6,5 @@ class BaseEditor(object):
     def __init__(self, executable):
         self.executable = executable
 
-    def visit_file(self, path, text_after):
+    def visit_file(self, path, line):
         raise NotImplementedError()
