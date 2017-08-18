@@ -20,20 +20,7 @@ def relative_path(path_text, text_after):
 
     This would be via a SmartSelection path regex.
     """
-    if path_text.startswith('/'):
-        raise ParseError
-
-    try:
-        with open(CWD_FILE) as fp:
-            cwd = fp.read().strip()
-    except IOError:
-        raise ParseError(
-            'Got path: %s\n'
-            'Interpreting as relative path, but current working '
-            'directory unknown.'
-        )
-    else:
-        return os.path.join(cwd, path_text), 1
+    return _parse_relative_path(path_text), 1
 
 
 def python_stack_trace(path_text, text_after):
@@ -74,6 +61,23 @@ def _parse_line_number(regex, text):
         raise ParseError()
     (line,) = match.groups()
     return int(line)
+
+
+def _parse_relative_path(path_text):
+    if path_text.startswith('/'):
+        raise ParseError
+
+    try:
+        with open(CWD_FILE) as fp:
+            cwd = fp.read().strip()
+    except IOError:
+        raise ParseError(
+            'Got path: %s\n'
+            'Interpreting as relative path, but current working '
+            'directory unknown.'
+        )
+    else:
+        return os.path.join(cwd, path_text)
 
 
 PARSERS = [
