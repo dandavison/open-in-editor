@@ -5,9 +5,8 @@ import subprocess
 import sys
 import traceback
 
+from iterm2_dwim import editors
 from iterm2_dwim import settings
-from iterm2_dwim.editors import emacs
-from iterm2_dwim.editors import sublime
 from iterm2_dwim.logger import log
 from iterm2_dwim.parsers import get_path_and_line
 
@@ -34,9 +33,9 @@ def notification_on_error():
 def main():
     with notification_on_error():
         if settings.sublime:
-            Editor = sublime.Sublime(settings.sublime)
+            Editor = editors.Sublime(settings.sublime)
         elif settings.emacsclient:
-            Editor = emacs.Emacs(settings.emacsclient)
+            Editor = editors.Emacs(settings.emacsclient)
         else:
             exc = Exception('No editor specified in settings.py')
             notify(exc)
