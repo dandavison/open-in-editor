@@ -5,12 +5,10 @@ import subprocess
 import sys
 import traceback
 
-from iterm2_dwim.editors import emacs
+from iterm2_dwim.editors import emacs, sublime
+from iterm2_dwim import settings
 from iterm2_dwim.logger import log
 from iterm2_dwim.parsers import get_path_and_line
-
-
-Editor = emacs.Editor
 
 
 def notify(exception):
@@ -34,10 +32,19 @@ def notification_on_error():
 
 def main():
     with notification_on_error():
+        if settings.sublime:
+            Editor = sublime.Sublime(settings.sublime)
+        elif settings.emacsclient:
+            Editor = emacs.Emacs(settings.emacsclient)
+        else:
+            exc = Exception('No editor specified in settings.py')
+            notify(exc)
+            raise exc
+
         log('\nsys.argv: %s' % ' '.join(sys.argv))
 
         path, line = get_path_and_line(*sys.argv[1:])
 
         log('Got path and line: %s %d' % (path, line))
 
-        Editor(path, line).visit_file()
+        Editor.visit_file(path, line)

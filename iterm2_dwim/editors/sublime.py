@@ -6,18 +6,15 @@ from iterm2_dwim.logger import log
 from iterm2_dwim.editors.base_editor import BaseEditor
 
 
-class Emacs(BaseEditor):
+class Sublime(BaseEditor):
 
     def visit_file(self, path, line):
-        emacsclient = self.path_to_client
+        subl = self.path_to_client
         path = re.sub('\.pyc$', '.py', path)
 
         cmd = [
-            emacsclient,
-            '--no-wait',
-            '--eval', '(find-file "%s")' % path,
-            '--eval', '(select-frame-set-input-focus (selected-frame))',
-            '--eval', '(goto-line %d)' % line,
+            subl,
+            '%s:%s' % (path, line)
         ]
         log(' '.join(cmd))
         subprocess.check_call(cmd)
