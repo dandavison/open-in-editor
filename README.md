@@ -61,6 +61,11 @@ Similarly, note that the python process inherits its environment from the iTerm2
 
 It writes a log: run `tail -f /tmp/iterm2-dwim.log`.
 
+If nothing happens and nothing is written to the log, another trick is just to run it from the command line and see the traceback:
+
+```
+$ iterm2-dwim /some/file.py 'any text can go here'
+```
 
 | Problem                                                              | Fix                                                                                                          |
 |----------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
