@@ -1,7 +1,3 @@
-import re
-
-
 class BaseEditor(object):
-
-    def __init__(self, path_to_client):
-        self.path_to_client = path_to_client
+    def __init__(self, executable):
+        self.executable = executable
