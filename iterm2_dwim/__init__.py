@@ -37,9 +37,7 @@ def main():
         elif settings.emacsclient:
             Editor = editors.Emacs(settings.emacsclient)
         else:
-            exc = Exception('No editor specified in settings.py')
-            notify(exc)
-            raise exc
+            raise Exception('No editor specified in settings.py')
 
         log('\nsys.argv: %s' % ' '.join(sys.argv))
 
