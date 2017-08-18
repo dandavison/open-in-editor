@@ -77,9 +77,9 @@ def _parse_line_number(regex, text):
 
 
 PARSERS = [
-    relative_path,
     python_stack_trace,
     ipdb_stack_trace,
     line_and_column,
     git_diff_path,
+    relative_path,
 ]
