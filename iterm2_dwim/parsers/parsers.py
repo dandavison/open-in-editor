@@ -43,9 +43,9 @@ def ipdb_stack_trace(path_text, text_after):
 
 def line_and_column(path_text, text_after):
     # counsyl/product/api/utils/fake.py:18:1:
-    regex = r'[^:]*:(\d+):\d+:[^:]*'
+    regex = r':(\d+):\d+.*'
     line = _parse_line_number(regex, text_after)
-    return path_text, line
+    return _parse_relative_path(path_text), line
 
 
 def git_diff_path(path_text, text_after):
