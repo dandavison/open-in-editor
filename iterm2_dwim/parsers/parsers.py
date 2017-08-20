@@ -21,39 +21,63 @@ class ParseError(Exception):
 
 def relative_path(path_text, extra_text):
     """
-    Relative path followed by directory.
-
-    This would be via a SmartSelection path regex.
+    >>> relative_path('a/b/c.py', 'xxx')
+    (CWD + '/a/b/c.py', 1)
     """
     return _parse_relative_path(path_text), 1
 
 
 def python_stack_trace(path_text, extra_text):
-    # python stack trace, e.g.
-    # File "/path/to/somefile.py", line 336, in some_function
+    """
+    python stack trace, e.g.
+    File "/a/b/c.py", line 2, in some_function
+
+    >>> python_stack_trace('/a/b/c.py', '", line 2, in some_function')
+    ('/a/b/c.py', 2)
+    """
     regex = r'[^"]*", line (\d+).*'
     line = _parse_line_number(regex, extra_text)
     return path_text, line
 
 
 def ipdb_stack_trace(path_text, extra_text):
-    # ipdb stack trace
-    # > /path/to/somefile.py(336)some_function()
-    # Fails for
-    # /home/dan/nfs-share/website/counsyl/product/data_entry/tests/__init__.py(1005)assertKey()
+    """
+    ipdb stack trace
+    > /a/b/c.py(336)some_function()
+
+    >>> ipdb_stack_trace('/a/b/c.py', '(336)some_function()')
+    ('/a/b/c.py', 336)
+    """
     regex = r'[^(]*\((\d+)\).*'
     line = _parse_line_number(regex, extra_text)
     return path_text, line
 
 
 def line_and_column(path_text, extra_text):
-    # counsyl/product/api/utils/fake.py:18:1:
+    """
+    counsyl/product/api/utils/fake.py:18:1:
+
+    >>> line_and_column('a/b/c.py', ':18:1:')
+    (CWD + '/a/b/c.py', 18)
+    """.format(cwd=CWD)
+
     regex = r':(\d+):\d+.*'
     line = _parse_line_number(regex, extra_text)
     return _parse_relative_path(path_text), line
 
 
 def git_diff_path(path_text, extra_text):
+    """
+    `git diff` output contains paths prefixed with a/ and b/:
+
+    diff --git a/a/b/c.py b/a/b/c.py
+
+    >>> git_diff_path('a/a/b/c.py', 'xxx')
+    (CWD + '/a/b/c.py', 1)
+    >>> git_diff_path('b/a/b/c.py', 'xxx')
+    (CWD + '/a/b/c.py', 1)
+    """.format(cwd=CWD)
+
     if not (path_text.startswith('a/') or
             path_text.startswith('b/')):
         raise ParseError
