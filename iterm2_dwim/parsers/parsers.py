@@ -8,6 +8,11 @@ from iterm2_dwim.logger import log
 # prompt function to inform iterm2-dwim of the current directory:
 # echo $PWD > /tmp/cwd
 CWD_FILE = '/tmp/cwd'
+try:
+    with open(CWD_FILE) as fp:
+        CWD = fp.read().strip()
+except IOError:
+    CWD = None
 
 
 class ParseError(Exception):
@@ -64,20 +69,16 @@ def _parse_line_number(regex, text):
 
 
 def _parse_relative_path(path_text):
-    if path_text.startswith('/'):
-        raise ParseError
-
-    try:
-        with open(CWD_FILE) as fp:
-            cwd = fp.read().strip()
-    except IOError:
+    if not CWD:
         raise ParseError(
             'Got path: %s\n'
             'Interpreting as relative path, but current working '
             'directory unknown.'
         )
-    else:
-        return os.path.join(cwd, path_text)
+    if path_text.startswith('/'):
+        raise ParseError
+
+    return os.path.join(CWD, path_text)
 
 
 PARSERS = [
