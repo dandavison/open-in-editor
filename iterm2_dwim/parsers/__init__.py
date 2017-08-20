@@ -16,6 +16,6 @@ def get_path_and_line(path_text, extra_text):
             if os.path.exists(path):
                 return path, line
 
-    assert os.path.exists(path_text)
+    assert os.path.exists(path_text), 'No such file: %s' % path_text
 
     return path_text, 1
