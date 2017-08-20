@@ -14,7 +14,7 @@ class ParseError(Exception):
     pass
 
 
-def relative_path(path_text, text_after):
+def relative_path(path_text, extra_text):
     """
     Relative path followed by directory.
 
@@ -23,32 +23,32 @@ def relative_path(path_text, text_after):
     return _parse_relative_path(path_text), 1
 
 
-def python_stack_trace(path_text, text_after):
+def python_stack_trace(path_text, extra_text):
     # python stack trace, e.g.
     # File "/path/to/somefile.py", line 336, in some_function
     regex = r'[^"]*", line (\d+).*'
-    line = _parse_line_number(regex, text_after)
+    line = _parse_line_number(regex, extra_text)
     return path_text, line
 
 
-def ipdb_stack_trace(path_text, text_after):
+def ipdb_stack_trace(path_text, extra_text):
     # ipdb stack trace
     # > /path/to/somefile.py(336)some_function()
     # Fails for
     # /home/dan/nfs-share/website/counsyl/product/data_entry/tests/__init__.py(1005)assertKey()
     regex = r'[^(]*\((\d+)\).*'
-    line = _parse_line_number(regex, text_after)
+    line = _parse_line_number(regex, extra_text)
     return path_text, line
 
 
-def line_and_column(path_text, text_after):
+def line_and_column(path_text, extra_text):
     # counsyl/product/api/utils/fake.py:18:1:
     regex = r':(\d+):\d+.*'
-    line = _parse_line_number(regex, text_after)
+    line = _parse_line_number(regex, extra_text)
     return _parse_relative_path(path_text), line
 
 
-def git_diff_path(path_text, text_after):
+def git_diff_path(path_text, extra_text):
     if not (path_text.startswith('a/') or
             path_text.startswith('b/')):
         raise ParseError
