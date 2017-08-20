@@ -19,96 +19,119 @@ class ParseError(Exception):
     pass
 
 
-def relative_path(path_text, extra_text):
+class Rule(object):
     """
-    >>> relative_path('a/b/c.py', 'xxx')
-    (CWD + '/a/b/c.py', 1)
+    Subclasses must implement self._parse(path_text, extra_text).
+    self._parse must set self.path and may set self.line.
     """
-    return _parse_relative_path(path_text), 1
+
+    def __init__(self):
+        self.path = None
+        self.line = None
+
+    def parse(self, path_text, extra_text):
+
+        self._parse(path_text, extra_text)
+
+        if not self.path:
+            raise ParseError()
+
+        if not self.path.startswith('/'):
+            if not CWD:
+                raise ParseError(
+                    'Got path: %s\n'
+                    'Interpreting as relative path, but current working '
+                    'directory unknown.'
+                )
+            self.path = os.path.join(CWD, self.path)
+
+        if not os.path.exists(self.path):
+            raise ParseError()
+
+        if not self.line:
+            self.line = 1
+
+        return self.path, self.line
 
 
-def python_stack_trace(path_text, extra_text):
+class Path(Rule):
+    """
+    >>> Path().parse('a/b/c.py', 'xxx')
+    ('a/b/c.py', 1)
+    """
+    def _parse(self, path_text, extra_text):
+        self.path = path_text
+
+
+class ExtraTextLineRegexRule(Rule):
+    regex = None
+
+    def _parse(self, path_text, extra_text):
+        self.path = path_text
+        self.line = self._parse_line_number(extra_text)
+
+    def _parse_line_number(self, text):
+        match = re.match(self.regex, text)
+        if not match:
+            raise ParseError()
+        (line,) = match.groups()
+        return int(line)
+
+
+class PythonStackTrace(ExtraTextLineRegexRule):
     """
     python stack trace, e.g.
     File "/a/b/c.py", line 2, in some_function
 
-    >>> python_stack_trace('/a/b/c.py', '", line 2, in some_function')
+    >>> PythonStackTrace().parse('/a/b/c.py', '", line 2, in some_function')
     ('/a/b/c.py', 2)
     """
     regex = r'[^"]*", line (\d+).*'
-    line = _parse_line_number(regex, extra_text)
-    return path_text, line
 
 
-def ipdb_stack_trace(path_text, extra_text):
+class IpdbStackTrace(ExtraTextLineRegexRule):
     """
     ipdb stack trace
     > /a/b/c.py(336)some_function()
 
-    >>> ipdb_stack_trace('/a/b/c.py', '(336)some_function()')
+    >>> IpdbStackTrace().parse('/a/b/c.py', '(336)some_function()')
     ('/a/b/c.py', 336)
     """
     regex = r'[^(]*\((\d+)\).*'
-    line = _parse_line_number(regex, extra_text)
-    return path_text, line
 
 
-def line_and_column(path_text, extra_text):
+class CompilerOutput(ExtraTextLineRegexRule):
     """
     counsyl/product/api/utils/fake.py:18:1:
 
-    >>> line_and_column('a/b/c.py', ':18:1:')
-    (CWD + '/a/b/c.py', 18)
-    """.format(cwd=CWD)
-
+    >>> CompilerOutput().parse('a/b/c.py', ':18:1:')
+    ('a/b/c.py', 18)
+    """
     regex = r':(\d+):\d+.*'
-    line = _parse_line_number(regex, extra_text)
-    return _parse_relative_path(path_text), line
 
 
-def git_diff_path(path_text, extra_text):
+class GitDiffOutput(Rule):
     """
     `git diff` output contains paths prefixed with a/ and b/:
 
     diff --git a/a/b/c.py b/a/b/c.py
 
-    >>> git_diff_path('a/a/b/c.py', 'xxx')
-    (CWD + '/a/b/c.py', 1)
-    >>> git_diff_path('b/a/b/c.py', 'xxx')
-    (CWD + '/a/b/c.py', 1)
-    """.format(cwd=CWD)
-
-    if not (path_text.startswith('a/') or
-            path_text.startswith('b/')):
-        raise ParseError
-    return relative_path(path_text[2:], None)
-
-
-def _parse_line_number(regex, text):
-    match = re.match(regex, text)
-    if not match:
-        raise ParseError()
-    (line,) = match.groups()
-    return int(line)
+    >>> GitDiffOutput().parse('a/a/b/c.py', 'xxx')
+    ('a/b/c.py', 1)
+    >>> GitDiffOutput().parse('b/a/b/c.py', 'xxx')
+    ('a/b/c.py', 1)
+    """
+    def _parse(self, path_text, extra_text):
+        if (path_text.startswith('a/') or path_text.startswith('b/')):
+            self.path = path_text[2:]
+        else:
+            raise ParseError
 
 
-def _parse_relative_path(path_text):
-    if not CWD:
-        raise ParseError(
-            'Got path: %s\n'
-            'Interpreting as relative path, but current working '
-            'directory unknown.'
-        )
-    if path_text.startswith('/'):
-        raise ParseError
-
-    return os.path.join(CWD, path_text)
-
-
-PARSERS = [
-    python_stack_trace,
-    ipdb_stack_trace,
-    line_and_column,
-    git_diff_path,
-    relative_path,
+RULES = [
+    PythonStackTrace(),
+    IpdbStackTrace(),
+    CompilerOutput(),
+    GitDiffOutput(),
+    Path(),
 ]
