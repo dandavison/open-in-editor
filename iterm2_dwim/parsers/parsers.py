@@ -56,6 +56,9 @@ class Rule(object):
 
 class Path(Rule):
     """
+    The simplest rule: accept the path_text without change and don't look for a
+    line number.
+
     >>> Path().parse('a/b/c.py', 'xxx')
     ('a/b/c.py', 1)
     """
@@ -64,6 +67,10 @@ class Path(Rule):
 
 
 class ExtraTextLineRegexRule(Rule):
+    """
+    Base class for rules employing a regex to extract the line number from the
+    `extra_text`.
+    """
     regex = None
 
     def _parse(self, path_text, extra_text):
