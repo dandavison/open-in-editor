@@ -1,20 +1,15 @@
 import os
 
 from iterm2_dwim.logger import log
-from iterm2_dwim.parsers.parsers import PARSERS
-from iterm2_dwim.parsers.parsers import ParseError
+from iterm2_dwim.parsers import parsers
 
 
-def get_path_and_line(path_text, text_after):
-    for parse_fn in PARSERS:
+def get_path_and_line(path_text, extra_text=''):
+    for rule in parsers.RULES:
+        log(rule.__class__.__name__)
         try:
-            path, line = parse_fn(path_text, text_after)
-        except ParseError as ex:
+            return rule.parse(path_text, extra_text)
+        except parsers.ParseError:
             continue
-        else:
-            if os.path.exists(path):
-                return path, line
 
-    assert os.path.exists(path_text)
-
-    return path_text, 1
+    raise parsers.ParseError('No matching rule')
