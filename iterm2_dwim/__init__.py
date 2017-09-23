@@ -36,6 +36,8 @@ def main():
             Editor = editors.Sublime(settings.sublime)
         elif settings.emacsclient:
             Editor = editors.Emacs(settings.emacsclient)
+        elif settings.pycharm:
+            Editor = editors.PyCharm(settings.pycharm)
         else:
             raise Exception('No editor specified in settings.py')
 

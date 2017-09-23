@@ -8,3 +8,7 @@ emacsclient = None
 # For example, if you've installed Sublime from the .dmg, this should probably be
 # sublime = '/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl'
 sublime = None
+
+# For example, this might be
+# pycharm = '/usr/local/bin/charm'
+pycharm = None
