@@ -38,7 +38,7 @@ The following path-like patterns are supported. For the ones with line numbers, 
 1. Find the absolute path to the `iterm2-dwim` executable, by running the command `which iterm2-dwim`. For example, on my system, this is `/usr/local/bin/iterm2-dwim`.
 
 1. Open iTerm2 settings, click on "Profiles", select your profile, click on the "Advanced" tab for that profile, and do two things (see screenshots below):
-   1. In the "Smart Selection" section, click "Edit", select the "Paths" rule, click "Edit Actions", click "+" to add an action, choose "Run Command" and enter `/absolute/path/to/iterm2-dwim \0 \d` as the "Parameter".
+   1. In the "Smart Selection" section, click "Edit", select the "Paths" rule, click "Edit Actions", click "+" to add an action, choose "Run Command" and enter `/absolute/path/to/iterm2-dwim \0` as the "Parameter".
    1. In the "Semantic History" section, choose "Run command" and enter `/absolute/path/to/iterm2-dwim \1 \4`.
    1. Make sure you didn't literally enter `/absolute/path/to/` -- the path should be the path from step (5), given by `which iterm2-dwim`.
 
