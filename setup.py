@@ -4,11 +4,12 @@ from setuptools import find_packages
 from setuptools import setup
 
 with open(os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                       'README.md')) as fp:
+                       'README.rst')) as fp:
     long_description = fp.read()
 
 setup(
     name='iterm2-dwim',
+    url='https://github.com/dandavison/iterm2-dwim',
     version=(open(os.path.join(os.path.dirname(__file__),
                                'version.txt'))
              .read().strip()),
