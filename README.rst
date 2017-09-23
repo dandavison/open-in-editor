@@ -12,17 +12,17 @@ numbers, the file will be opened at that line.
 +---------------------------------------------------------------+--------------------------------+----------+
 | Pattern                                                       | Type                           | Status   |
 +===============================================================+================================+==========+
-| ``/absolute/path/to/file``                                    | Absolute path                  | ✅        |
+| ``/absolute/path/to/file``                                    | Absolute path                  | ✅       |
 +---------------------------------------------------------------+--------------------------------+----------+
-| ``relative/path/to/file``                                     | Relative path                  | ✅        |
+| ``relative/path/to/file``                                     | Relative path                  | ✅       |
 +---------------------------------------------------------------+--------------------------------+----------+
-| ``relative/path/to/file:336:1:``                              | Compiler / Linter etc output   | ❌        |
+| ``relative/path/to/file:336:1:``                              | Compiler / Linter etc output   | ❌       |
 +---------------------------------------------------------------+--------------------------------+----------+
-| ``a/relative/path/to/file``                                   | In git diff output             | ✅        |
+| ``a/relative/path/to/file``                                   | In git diff output             | ✅       |
 +---------------------------------------------------------------+--------------------------------+----------+
-| ``"/absolute/path/to/file.py", line 336, in some_function``   | Python stack traces            | ✅        |
+| ``"/absolute/path/to/file.py", line 336, in some_function``   | Python stack traces            | ✅       |
 +---------------------------------------------------------------+--------------------------------+----------+
-| ``> /path/to/file.py(336)some_function()``                    | Python ipdb output             | ✅        |
+| ``> /path/to/file.py(336)some_function()``                    | Python ipdb output             | ✅       |
 +---------------------------------------------------------------+--------------------------------+----------+
 
 Installation
