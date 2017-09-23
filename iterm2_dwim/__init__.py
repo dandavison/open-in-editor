@@ -31,6 +31,7 @@ def notification_on_error():
 
 
 def main():
+    log('')
     with notification_on_error():
         if settings.sublime:
             Editor = editors.Sublime(settings.sublime)
@@ -41,7 +42,7 @@ def main():
         else:
             raise Exception('No editor specified in settings.py')
 
-        log('\nsys.argv: %s' % ' '.join(sys.argv))
+        log('sys.argv: %s' % sys.argv)
 
         path, line = get_path_and_line(*sys.argv[1:])
 
