@@ -113,8 +113,11 @@ class CompilerOutput(ExtraTextLineRegexRule):
 
     >>> CompilerOutput().parse('a/b/c.py', ':18:1:')
     ('a/b/c.py', 18)
+
+    >>> CompilerOutput().parse('a/b/c.py', ':186: error: Incompatible types in assignment')
+    ('a/b/c.py', 186)
     """
-    regex = r':(\d+):\d+.*'
+    regex = r':(\d+):.*'
 
 
 class GitDiffOutput(Rule):
