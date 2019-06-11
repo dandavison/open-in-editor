@@ -49,7 +49,7 @@ Installation
 6. In the "Semantic History" section, choose "Run command" and enter
    ``/absolute/path/to/iterm2-dwim \1 \4``.
 7. Make sure you didn't literally enter ``/absolute/path/to/`` -- the
-   path should be the path from step (5), given by
+   path should be the path from step (3), given by
    ``which iterm2-dwim``.
 
 8. (Optional, but relative paths won't be resolved without it):
