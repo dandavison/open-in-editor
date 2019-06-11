@@ -75,9 +75,15 @@ Optional configuration
 1. To get error message alerts, run ``brew install terminal-notifier``
    and check it's working with ``terminal-notifier -message hello``.
 
-**For Emacs users:** 1. Make sure that you are starting the emacs server
+**For Emacs users:**
+
+1. Make sure that you are starting the emacs server
 in your emacs config file:
-``elisp     (require 'server)     (unless (server-running-p) (server-start))``
+
+   .. code:: emacs-lisp
+
+       (require 'server)
+       (unless (server-running-p) (server-start))
 
 Debugging
 ~~~~~~~~~
@@ -98,4 +104,4 @@ just to run it from the command line and see the traceback:
 
 ::
 
-    $ iterm2-dwim /some/file.py 'any text can go here'
+    $ iterm2-dwim /some/file.py 'the text that comes after the file path'
