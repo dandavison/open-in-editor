@@ -42,15 +42,19 @@ Installation
 4. Open iTerm2 settings, click on "Profiles", select your profile, click
    on the "Advanced" tab for that profile, and do two things (see
    screenshots below):
-5. In the "Smart Selection" section, click "Edit", select the "Paths"
-   rule, click "Edit Actions", click "+" to add an action, choose "Run
-   Command" and enter ``/absolute/path/to/iterm2-dwim \0`` as the
+5. In the "Smart Selection" section, click "Edit", click "+" to add a new rule, and enter the
+   following values in the 3 rule fields:
+   - Notes: ``Compiler/Linter output``
+   - Regular Expression: ``(\~?/?([[:letter:][:number:]._-]+/+)+[[:letter:][:number:]._-]+/?)(:.+)``
+   - Precision: ``Very High``
+   Now click "Edit Actions", click "+" to add an action, choose "Run
+   Command" and enter ``/absolute/path/to/iterm2-dwim \1 \3`` as the
    "Parameter".
 6. In the "Semantic History" section, choose "Run command" and enter
    ``/absolute/path/to/iterm2-dwim \1 \4``.
-7. Make sure you didn't literally enter ``/absolute/path/to/`` -- the
-   path should be the path from step (3), given by
-   ``which iterm2-dwim``.
+
+7. Make sure you didn't literally enter ``/absolute/path/to/`` anywhere!
+   The path should be the path from step (3), given by ``which iterm2-dwim``.
 
 8. (Optional, but relative paths won't be resolved without it):
    configure your shell prompt so that the current directory is written
