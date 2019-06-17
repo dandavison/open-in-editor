@@ -1,7 +1,7 @@
 ``iterm2-dwim`` is a click handler for iTerm2. The aim is that you
 command-click on any file path, relative or absolute, and it opens the
 file in your editor. If there was a line number, your editor goes to
-that line. So, compiler/linter output, tracebacks, etc.
+that line. So, compiler/linter output, tracebacks, git output, etc.
 
 Currently Emacs, PyCharm and Sublime are supported. To choose which
 editor to use, see ``settings.py``.
