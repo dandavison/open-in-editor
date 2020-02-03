@@ -43,8 +43,11 @@ def main():
             raise Exception('No editor specified in settings.py')
 
         log('sys.argv: %s' % sys.argv)
+        path_text, extra_text = sys.argv[1:]
+        if hasattr(settings, "rewrite_path"):
+            path_text = settings.rewrite_path(path_text)
 
-        path, line = get_path_and_line(*sys.argv[1:])
+        path, line = get_path_and_line(path_text, extra_text)
 
         log('Got path and line: %s %d' % (path, line))
 

@@ -12,3 +12,7 @@ sublime = None
 # For example, this might be
 # pycharm = '/usr/local/bin/charm'
 pycharm = None
+
+
+def rewrite_path(path):
+    return path
