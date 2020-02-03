@@ -7,7 +7,7 @@ from iterm2_dwim.logger import log
 # For relative paths to be handled, add something like the following to shell
 # prompt function to inform iterm2-dwim of the current directory:
 # echo $PWD > /tmp/cwd
-CWD_FILE = '/tmp/cwd'
+CWD_FILE = "/tmp/cwd"
 try:
     with open(CWD_FILE) as fp:
         CWD = fp.read().strip()
@@ -36,12 +36,12 @@ class Rule(object):
         if not self.path:
             raise ParseError()
 
-        if not self.path.startswith('/'):
+        if not self.path.startswith("/"):
             if not CWD:
                 raise ParseError(
-                    'Got path: %s\n'
-                    'Interpreting as relative path, but current working '
-                    'directory unknown.'
+                    "Got path: %s\n"
+                    "Interpreting as relative path, but current working "
+                    "directory unknown."
                 )
             self.path = os.path.join(CWD, self.path)
 
@@ -62,6 +62,7 @@ class Path(Rule):
     >>> Path().parse('a/b/c.py', 'xxx')
     ('a/b/c.py', 1)
     """
+
     def _parse(self, path_text, extra_text):
         self.path = path_text
 
@@ -71,6 +72,7 @@ class ExtraTextLineRegexRule(Rule):
     Base class for rules employing a regex to extract the line number from the
     `extra_text`.
     """
+
     regex = None
 
     def _parse(self, path_text, extra_text):
@@ -93,6 +95,7 @@ class PythonStackTrace(ExtraTextLineRegexRule):
     >>> PythonStackTrace().parse('/a/b/c.py', '", line 2, in some_function')
     ('/a/b/c.py', 2)
     """
+
     regex = r'[^"]*", line (\d+).*'
 
 
@@ -104,7 +107,8 @@ class IpdbStackTrace(ExtraTextLineRegexRule):
     >>> IpdbStackTrace().parse('/a/b/c.py', '(336)some_function()')
     ('/a/b/c.py', 336)
     """
-    regex = r'[^(]*\((\d+)\).*'
+
+    regex = r"[^(]*\((\d+)\).*"
 
 
 class CompilerOutput(ExtraTextLineRegexRule):
@@ -117,7 +121,8 @@ class CompilerOutput(ExtraTextLineRegexRule):
     >>> CompilerOutput().parse('a/b/c.py', ':186: error: Incompatible types in assignment')
     ('a/b/c.py', 186)
     """
-    regex = r'.*:(\d+):.*'
+
+    regex = r".*:(\d+):.*"
 
 
 class GitDiffOutput(Rule):
@@ -131,22 +136,18 @@ class GitDiffOutput(Rule):
     >>> GitDiffOutput().parse('b/a/b/c.py', 'xxx')
     ('a/b/c.py', 1)
     """
+
     def _parse(self, path_text, extra_text):
-        if (path_text.startswith('a/') or path_text.startswith('b/')):
+        if path_text.startswith("a/") or path_text.startswith("b/"):
             self.path = path_text[2:]
         else:
             raise ParseError
 
 
-RULES = [
-    PythonStackTrace(),
-    IpdbStackTrace(),
-    CompilerOutput(),
-    GitDiffOutput(),
-    Path(),
-]
+RULES = [PythonStackTrace(), IpdbStackTrace(), CompilerOutput(), GitDiffOutput(), Path()]
 
 
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

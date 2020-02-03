@@ -12,12 +12,17 @@ from iterm2_dwim.parsers import get_path_and_line
 
 
 def notify(exception):
-    subprocess.check_call([
-        '/usr/local/bin/terminal-notifier',
-        '-title', 'iterm2-dwim',
-        '-subtitle', exception.__class__.__name__,
-        '-message', str(exception),
-    ])
+    subprocess.check_call(
+        [
+            "/usr/local/bin/terminal-notifier",
+            "-title",
+            "iterm2-dwim",
+            "-subtitle",
+            exception.__class__.__name__,
+            "-message",
+            str(exception),
+        ]
+    )
 
 
 @contextmanager
@@ -31,7 +36,7 @@ def notification_on_error():
 
 
 def main():
-    log('')
+    log("")
     with notification_on_error():
         if settings.sublime:
             Editor = editors.Sublime(settings.sublime)
@@ -40,15 +45,16 @@ def main():
         elif settings.pycharm:
             Editor = editors.PyCharm(settings.pycharm)
         else:
-            raise Exception('No editor specified in settings.py')
+            raise Exception("No editor specified in settings.py")
 
-        log('sys.argv: %s' % sys.argv)
+        log("sys.argv: %s" % sys.argv)
+
         path_text, extra_text = sys.argv[1:]
         if hasattr(settings, "rewrite_path"):
             path_text = settings.rewrite_path(path_text)
 
         path, line = get_path_and_line(path_text, extra_text)
 
-        log('Got path and line: %s %d' % (path, line))
+        log("Got path and line: %s %d" % (path, line))
 
         Editor.visit_file(path, line)
