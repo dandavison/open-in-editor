@@ -9,7 +9,8 @@ def get_path_and_line(path_text, extra_text=""):
         log(rule.__class__.__name__)
         try:
             return rule.parse(path_text, extra_text)
-        except parsers.ParseError:
+        except parsers.ParseError as exc:
+            log(exc)
             continue
 
     raise parsers.ParseError("No matching rule")

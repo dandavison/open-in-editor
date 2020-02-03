@@ -28,13 +28,14 @@ class Rule(object):
     def __init__(self):
         self.path = None
         self.line = None
+        self.name = type(self).__name__
 
     def parse(self, path_text, extra_text):
 
         self._parse(path_text, extra_text)
 
         if not self.path:
-            raise ParseError()
+            raise ParseError(f"{self.name}: Failed to parse path: {path_text}")
 
         if not self.path.startswith("/"):
             if not CWD:
@@ -46,7 +47,7 @@ class Rule(object):
             self.path = os.path.join(CWD, self.path)
 
         if not os.path.exists(self.path):
-            raise ParseError()
+            raise ParseError(f"{self.name}: Path does not exist: {self.path}")
 
         if not self.line:
             self.line = 1
