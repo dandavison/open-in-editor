@@ -11,8 +11,8 @@ sublime = None
 
 
 # For example, if you've used the VSCode 'Install 'code' command in PATH', this should proably be
-vscode = '/usr/local/bin/code'
-# vscode = None
+# vscode = '/usr/local/bin/code'
+vscode = None
 
 # For example, this might be
 # pycharm = '/usr/local/bin/charm'
