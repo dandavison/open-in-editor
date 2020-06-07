@@ -9,6 +9,12 @@ emacsclient = None
 # sublime = '/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl'
 sublime = None
 
+
+# For example, if you've used the VSCode 'Install 'code' command in PATH', this should probably be
+# vscode = '/usr/local/bin/code'
+vscode = None
+
+
 # For example, this might be
 # pycharm = '/usr/local/bin/charm'
 pycharm = None

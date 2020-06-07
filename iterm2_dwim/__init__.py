@@ -42,6 +42,8 @@ def main():
             Editor = editors.Sublime(settings.sublime)
         elif settings.emacsclient:
             Editor = editors.Emacs(settings.emacsclient)
+        elif settings.vscode:
+            Editor = editors.VSCode(settings.vscode)
         elif settings.pycharm:
             Editor = editors.PyCharm(settings.pycharm)
         else:
