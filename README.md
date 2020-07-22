@@ -6,7 +6,7 @@ The URL must be structured like a [file URL](https://en.wikipedia.org/wiki/File_
 
 The URL scheme (protocol) is ignored. For example, you could use standard `file://` URLs, or you could use a custom URL scheme that only exists in your system. In either case, you must register `open-in-editor` (or the provided MacOS application) with your OS as the handler for that URL scheme.
 
-### Examples
+## Examples
 
 ```bash
 # Using the standard "file://" scheme
@@ -21,7 +21,7 @@ open-in-editor 'file-line-column:///a/b/myfile.txt:7:77'
 ```
 
 
-### Installation
+## Installation
 
 ```
 git clone git@github.com:dandavison/open-in-editor.git
@@ -30,12 +30,25 @@ python3 -m venv virtualenv
 ./virtualenv/bin/pip install -e .
 ```
 
+Edit `open_in_editor/settings.py` to provide the command to communicate with your editor/IDE (see comments in that file).
+
+Finally, you need to register `open-in-editor` with your OS to act as the handler for the URL schemes you are going to use:
+
 ### MacOS
 
-For MacOS, an application bundle `OpenInEditor.app` is provided. This "application bundle" is a normal directory. Inside that directory, you must edit the first line of the file `OpenInEditor.app/Contents/Resources/script` so that it contains the absolute path to the `open-in-editor` executable in the virtualenv.
+1. Use [platypus](https://github.com/sveinbjornt/Platypus) (`brew cask install platypus`) to create a MacOS application wrapping the `open-in-editor` executable. For "Script type" enter the absolute path to the python executable in the `./virtualenv/bin/` directory, and for "Script path" enter the absolute path to the `open-in-editor` executable in the `./virtualenv/bin/` directory.
+  <table><tr><td><img width=600px src="https://user-images.githubusercontent.com/52205/88239098-665cda80-cc51-11ea-8f80-ca330a369310.png" alt="image" /></td></tr></table>
 
-To register the MacOS application (`org.dandavison.OpenInEditor`) as the handler for a custom URL scheme, you could use [duti](https://github.com/moretension/duti) (`brew install duti`). For example, to make `open-in-editor` handle URLs of the form `file-line-column:///a/b/myfile.txt:7:77`, you would do:
+2. Use [duti](https://github.com/moretension/duti) (`brew install duti`) to register the MacOS application as the handler for the URL schemes you want it to handle. For example, to make `open-in-editor` handle URLs of the form `file-line-column:///a/b/myfile.txt:7:77`, you would do:
 
 ```bash
-duti -s org.dandavison.OpenInEditor file-line-column
+duti -s <APPLICATION-IDENTIFIER> file-line-column
 ```
+
+where `<APPLICATION-IDENTIFIER>` is whatever you entered in the "Identifier" field in Platypus.
+
+### Linux
+TODO
+
+### Windows
+TODO
