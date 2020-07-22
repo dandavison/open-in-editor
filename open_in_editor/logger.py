@@ -1,7 +1,7 @@
 import datetime
 
 
-LOGFILE = "/tmp/iterm2-dwim.log"
+LOGFILE = "/tmp/open-in-editor.log"
 
 
 def log(line):
