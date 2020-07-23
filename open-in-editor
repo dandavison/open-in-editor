@@ -1,0 +1,167 @@
+#!/usr/bin/env python
+"""
+This code is all in one file, and supports Python 2, in order that it can be wrapped conveniently
+as a MacOS application bundle (e.g. using https://github.com/sveinbjornt/Platypus).
+"""
+from __future__ import print_function
+import datetime
+import subprocess
+import sys
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    # Python 2
+    from urlparse import urlparse
+
+# START USER-CUSTOMIZABLE SECTION
+#
+# To select your editor, set one of the following to the absolute path to the
+# relevant executable file on your system.
+
+# For example, if you have installed Emacs in MacOS from homebrew, this should probably be
+# emacsclient = '/usr/local/bin/emacsclient'
+EMACSCLIENT = None
+
+# For example, this might be
+# pycharm = '/usr/local/bin/charm'
+PYCHARM = None
+
+# For example, if you've installed Sublime in MacOS from the .dmg, this should probably be
+# sublime = '/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl'
+SUBLIME = None
+
+# For example, if you've used the VSCode 'Install 'code' command in PATH', this should probably be
+# vscode = '/usr/local/bin/code'
+VSCODE = None
+
+#
+# END USER-CUSTOMIZABLE SECTION
+#
+
+LOGFILE = "/tmp/open-in-editor.log"
+
+
+def main():
+    if EMACSCLIENT:
+        Editor = Emacs(EMACSCLIENT)
+    elif SUBLIME:
+        Editor = Sublime(SUBLIME)
+    elif VSCODE:
+        Editor = VSCode(VSCODE)
+    elif PYCHARM:
+        Editor = PyCharm(PYCHARM)
+    else:
+        log("ERROR: No editor selected")
+        sys.exit(1)
+
+    try:
+        (url,) = sys.argv[1:]
+
+        path, line, _ = parse_url(url)
+
+        log("path=%s line=%s" % (path, line))
+
+        Editor.visit_file(path, line or 1)
+    except Exception:
+        from traceback import format_exc
+        log(format_exc())
+        sys.exit(1)
+
+
+def parse_url(url):  # type: (str) -> (str, Optional[int], Optional[int]):
+    """
+    Parse a file-like URL into path, line, and column.
+
+    >>> parse_url("file:///a/b/myfile.txt")
+    ('/a/b/myfile.txt', None, None)
+
+    >>> parse_url("file-line-column:///a/b/myfile.txt")
+    ('/a/b/myfile.txt', None, None)
+
+    >>> parse_url("file:///a/b/myfile.txt:7")
+    ('/a/b/myfile.txt', 7, None)
+
+    >>> parse_url("file:///a/b/myfile.txt:7:77")
+    ('/a/b/myfile.txt', 7, 77)
+
+    >>> parse_url("file://localhost/a/b/myfile.txt:7:77")
+    ('/a/b/myfile.txt', 7, 77)
+    """
+    path, _, line_and_column = urlparse(url).path.partition(":")
+    line, _, column = line_and_column.partition(":")
+    try:
+        line = int(line)
+    except ValueError:
+        line = None
+    try:
+        column = int(column)
+    except ValueError:
+        column = None
+    return path, line, column
+
+
+def log(line):
+    time = datetime.datetime.now().isoformat(" ").split(".")[0]
+    with open(LOGFILE, "a") as fp:
+        print(time, file=fp)
+        print(line, file=fp)
+        print("\n", file=fp)
+        fp.flush()
+
+
+class BaseEditor(object):
+    """
+    Abstract base class for editors.
+    """
+
+    def __init__(self, executable):
+        self.executable = executable
+
+    def visit_file(self, path, line):
+        raise NotImplementedError()
+
+
+class Emacs(BaseEditor):
+    def visit_file(self, path, line):
+        cmd = [
+            self.executable,
+            "--no-wait",
+            "--eval",
+            '(find-file "%s")' % path,
+            "--eval",
+            "(goto-line %d)" % line,
+            "--eval",
+            "(recenter-top-bottom)",
+            "--eval",
+            "(select-frame-set-input-focus (selected-frame))",
+            "--eval",
+            "(when (functionp 'pulse-momentary-highlight-one-line)"
+            " (let ((pulse-delay 0.05)) (pulse-momentary-highlight-one-line (point) 'highlight)))",
+        ]
+        log(" ".join(cmd))
+        subprocess.check_call(cmd)
+
+
+class PyCharm(BaseEditor):
+    def visit_file(self, path, line):
+        cmd = [self.executable, "--line", str(line), path]
+        log(" ".join(cmd))
+        subprocess.check_call([s.encode("utf-8") for s in cmd])
+
+
+class Sublime(BaseEditor):
+    def visit_file(self, path, line):
+        cmd = [self.executable, "%s:%s" % (path, line)]
+        log(" ".join(cmd))
+        subprocess.check_call(cmd)
+
+
+class VSCode(BaseEditor):
+    def visit_file(self, path, line):
+        cmd = [self.executable, "-g", "%s:%s" % (path, line)]
+        log(" ".join(cmd))
+        subprocess.check_call(cmd)
+
+
+if __name__ == '__main__':
+    main()

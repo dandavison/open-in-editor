@@ -23,16 +23,11 @@ open-in-editor 'file-line-column:///a/b/myfile.txt:7:77'
 
 ## Installation
 
-```
-git clone git@github.com:dandavison/open-in-editor.git
-cd open-in-editor
-python3 -m venv virtualenv
-./virtualenv/bin/pip install -e .
-```
+Download the `open_in_editor.py` file from this repo.
 
-Edit `open_in_editor/settings.py` to provide the command to communicate with your editor/IDE (see comments in that file).
+Edit `open_in_editor.py` to provide the command to communicate with your editor/IDE (see comments in that file).
 
-Finally, you need to register `open-in-editor` with your OS to act as the handler for the URL schemes you are going to use:
+Finally, you need to register `open-in-editor.py` with your OS to act as the handler for the URL schemes you are going to use:
 
 ### MacOS
 
