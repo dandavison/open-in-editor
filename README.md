@@ -25,15 +25,22 @@ open-in-editor 'file-line-column:///a/b/myfile.txt:7:77'
 
 Download the `open-in-editor` file from this repo and make it executable.
 
-Edit `open-in-editor` to provide the command to communicate with your editor/IDE (see comments near the top of that file).
+Ensure that one of the environment variables `OPEN_IN_EDITOR` or `EDITOR` contains a path to an executable that `open-in-editor` is going to recognize. This environment variable must be set system-wide, not just in your shell process. For example, in MacOS, one does this with `launchctl setenv EDITOR /path/to/my/editor/executable`.
+
+`open-in-editor` looks for any of the following substrings in the path: `emacsclient` (emacs), `subl` (sublime), `charm` (pycharm), `code` (vscode). For example, any of the following values would work:
+
+- `/usr/local/bin/emacsclient`
+- `/usr/local/bin/charm`
+- `/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl`
+- `/usr/local/bin/code`
+
+If your editor/IDE isn't supported, then please open an issue. If your editor/IDE is supported, but the above logic needs to be made more sophisticated, then either (a) open an issue, or (b) create a symlink that complies with the above rules.
 
 Next, you need to register `open-in-editor` with your OS to act as the handler for the URL schemes you are going to use:
 
 ### MacOS app
 
 For MacOS, an application bundle `OpenInEditor.app` is provided.
-
-Edit `OpenInEditor.app/Contents/Resources/script` to provide the command to communicate with your editor/IDE (see comments near the top of that file).
 
 Use [duti](https://github.com/moretension/duti) (`brew install duti`) to register the MacOS application (`org.dandavison.OpenInEditor`) as the handler for the URL schemes you want it to handle. For example, to make `open-in-editor` handle URLs of the form `file-line-column:///a/b/myfile.txt:7:77`, you would do:
 
