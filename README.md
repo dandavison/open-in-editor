@@ -23,24 +23,23 @@ open-in-editor 'file-line-column:///a/b/myfile.txt:7:77'
 
 ## Installation
 
-Download the `open_in_editor.py` file from this repo.
+Download the `open-in-editor` file from this repo and make it executable.
 
-Edit `open_in_editor.py` to provide the command to communicate with your editor/IDE (see comments in that file).
+Edit `open-in-editor` to provide the command to communicate with your editor/IDE (see comments near the top of that file).
 
-Finally, you need to register `open-in-editor.py` with your OS to act as the handler for the URL schemes you are going to use:
+Next, you need to register `open-in-editor` with your OS to act as the handler for the URL schemes you are going to use:
 
-### MacOS
+### MacOS app
 
-1. Use [platypus](https://github.com/sveinbjornt/Platypus) (`brew cask install platypus`) to create a MacOS application wrapping the `open-in-editor` executable. For "Script type" enter the absolute path to the python executable in the `./virtualenv/bin/` directory, and for "Script path" enter the absolute path to the `open-in-editor` executable in the `./virtualenv/bin/` directory.
-  <table><tr><td><img width=600px src="https://user-images.githubusercontent.com/52205/88239098-665cda80-cc51-11ea-8f80-ca330a369310.png" alt="image" /></td></tr></table>
+For MacOS, an application bundle `OpenInEditor.app` is provided.
 
-2. Use [duti](https://github.com/moretension/duti) (`brew install duti`) to register the MacOS application as the handler for the URL schemes you want it to handle. For example, to make `open-in-editor` handle URLs of the form `file-line-column:///a/b/myfile.txt:7:77`, you would do:
+Edit `OpenInEditor.app/Contents/Resources/script` to provide the command to communicate with your editor/IDE (see comments near the top of that file).
+
+Use [duti](https://github.com/moretension/duti) (`brew install duti`) to register the MacOS application (`org.dandavison.OpenInEditor`) as the handler for the URL schemes you want it to handle. For example, to make `open-in-editor` handle URLs of the form `file-line-column:///a/b/myfile.txt:7:77`, you would do:
 
 ```bash
-duti -s <APPLICATION-IDENTIFIER> file-line-column
+duti -s org.dandavison.OpenInEditor file-line-column
 ```
-
-where `<APPLICATION-IDENTIFIER>` is whatever you entered in the "Identifier" field in Platypus.
 
 ### Linux
 TODO
