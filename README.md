@@ -27,12 +27,14 @@ Download the `open-in-editor` file from this repo and make it executable.
 
 Ensure that one of the environment variables `OPEN_IN_EDITOR` or `EDITOR` contains a path to an executable that `open-in-editor` is going to recognize. This environment variable must be set system-wide, not just in your shell process. For example, in MacOS, one does this with `launchctl setenv EDITOR /path/to/my/editor/executable`.
 
-`open-in-editor` looks for any of the following substrings in the path: `emacsclient` (emacs), `subl` (sublime), `charm` (pycharm), `code` (vscode). For example, any of the following values would work:
+`open-in-editor` looks for any of the following substrings in the path: `emacsclient` (emacs), `subl` (sublime), `charm` (pycharm), `code` (vscode) or `vim` (vim). For example, any of the following values would work:
 
 - `/usr/local/bin/emacsclient`
 - `/usr/local/bin/charm`
 - `/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl`
 - `/usr/local/bin/code`
+- `/usr/bin/vim`
+- `/usr/local/bin/nvim`
 
 If your editor/IDE isn't supported, then please open an issue. If your editor/IDE is supported, but the above logic needs to be made more sophisticated, then either (a) open an issue, or (b) create a symlink that complies with the above rules.
 
