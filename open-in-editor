@@ -100,6 +100,8 @@ class BaseEditor(object):
             sub_cls = PyCharm
         elif "code" in executable_path:
             sub_cls = VSCode
+        elif "vim" in executable_path:
+            sub_cls = Vim
         else:
             log(
                 "ERROR: failed to infer your editor. "
@@ -157,6 +159,13 @@ class Sublime(BaseEditor):
 class VSCode(BaseEditor):
     def visit_file(self, path, line):
         cmd = [self.executable, "-g", "%s:%s" % (path, line)]
+        log(" ".join(cmd))
+        subprocess.check_call(cmd)
+
+
+class Vim(BaseEditor):
+    def visit_file(self, path, line):
+        cmd = [self.executable, "+%s" % str(line), path]
         log(" ".join(cmd))
         subprocess.check_call(cmd)
 
