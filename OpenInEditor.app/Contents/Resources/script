@@ -100,13 +100,15 @@ class BaseEditor(object):
             sub_cls = PyCharm
         elif "code" in executable_path:
             sub_cls = VSCode
+        elif "vim" in executable_path:
+            sub_cls = Vim
         else:
             log(
                 "ERROR: failed to infer your editor. "
                 "The values of the relevant environment variables are: "
                 "OPEN_IN_EDITOR=%s and EDITOR=%s. "
                 "I was expecting one of these to contain one of the following substrings: "
-                "emacsclient, subl, charm, code."
+                "emacsclient, subl, charm, code, vim."
                 % (OPEN_IN_EDITOR, EDITOR)
             )
             sys.exit(1)
@@ -157,6 +159,13 @@ class Sublime(BaseEditor):
 class VSCode(BaseEditor):
     def visit_file(self, path, line):
         cmd = [self.executable, "-g", "%s:%s" % (path, line)]
+        log(" ".join(cmd))
+        subprocess.check_call(cmd)
+
+
+class Vim(BaseEditor):
+    def visit_file(self, path, line):
+        cmd = [self.executable, "+%s" % str(line), path]
         log(" ".join(cmd))
         subprocess.check_call(cmd)
 
