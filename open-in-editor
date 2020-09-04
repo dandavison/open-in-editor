@@ -108,7 +108,7 @@ class BaseEditor(object):
                 "The values of the relevant environment variables are: "
                 "OPEN_IN_EDITOR=%s and EDITOR=%s. "
                 "I was expecting one of these to contain one of the following substrings: "
-                "emacsclient, subl, charm, code."
+                "emacsclient, subl, charm, code, vim."
                 % (OPEN_IN_EDITOR, EDITOR)
             )
             sys.exit(1)
