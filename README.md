@@ -52,36 +52,37 @@ duti -s org.dandavison.OpenInEditor file-line-column
 
 ### Linux
 
-On a system that complies to the [XDG shared MIME-info DB specification](https://specifications.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-latest.html#idm140625828587776), there are two simple steps to follow. This should apply to the majority of current GNU/Linux installations - if you're unsure check if `type -P xdg-mime` returns a file path.
+On a system that complies with the [XDG shared MIME-info DB specification](https://specifications.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-latest.html#idm140625828587776), you can follow the steps below. This should apply to the majority of current GNU/Linux installations - if you're unsure, run `type -P xdg-mime` and check that it returns a file path.
 
-First, you need to create a `.desktop` file which references `open-in-editor`, and then set that as default for either the `file-line-column://` or the `file://` URL scheme, depending on your choice. For example execute the following commands in a shell :
+1. Create the directory `~/.local/share/applications/`, if it doesn't exist already.
 
-```sh
-$ cat >~/.local/share/applications/augmented-open.desktop <<OVER
-[Desktop Entry]
-Type=Application
-Name=AugmentedOpen
-GenericName=Open a file at a certain position
-Comment=Opens URLs of the type file-line-column://<path>[:<line>[:<column>]] in the configured editor and positions the cursor
-Icon=text-editor
-Exec=open-in-editor %U
-Categories=Utility;Core;
-StartupNotify=false
-MimeType=x-scheme-handler/file-line-column
-OVER
+2. Create the file `~/.local/share/applications/augmented-open.desktop` and add the following contents to it:
+   ```
+   [Desktop Entry]
+   Type=Application
+   Name=AugmentedOpen
+   GenericName=Open a file at a certain position
+   Comment=Opens URLs of the type file-line-column://<path>[:<line>[:<column>]] in the configured editor and positions the cursor
+   Icon=text-editor
+   Exec=open-in-editor %U
+   Categories=Utility;Core;
+   StartupNotify=false
+   MimeType=x-scheme-handler/file-line-column
+   ```
 
-$ xdg-mime default augmented-open.desktop x-scheme-handler/file-line-column
-```
+3. Run the command
+   ```
+   xdg-mime default augmented-open.desktop x-scheme-handler/file-line-column
+   ```
+   This registers the `augmented-open.desktop` handler as the default handler for URLs using the `file-line-column://` protocol.
 
-Alternatively, you can register the URL scheme system wide (i.e. for _every_ user); just run those two shell commands as the root user (e.g. prefix them with `sudo`) and replace `~/.local/...` with `/usr/local/...` in the topmost line.
+The string used for the URL protocol is up to you: if you want to use `open-in-editor` to handle `file://` URLs, then replace `file-line-column` with `file` in the above instructions.
 
-If you'd rather overwrite the default `file://` URL scheme, just replace every instance of `file-line-column` with just `file`.
+If you want to register the URL handler system-wide (i.e. for _every_ user) then create the file at `/usr/local/...` instead of `~/.local/...`. You will need to use `sudo` to perform the commands since they will need root permissions.
 
-Remember to define the `EDITOR` (resp. `OPEN_IN_EDITOR`) variable in your environment, if you haven't already done so.
+Remember to define the `EDITOR` or `OPEN_IN_EDITOR` environment variable, if you haven't already done so.
 
-You can now use this type of URLs with `xdg-open file[-line-column]://<path>[:line[:column]]` or - in case you run a desktop environment which supports it - by clicking on such a URL just like you would with a web link.
-
-TODO: automation (makefile/script)
+You can now use these URLs by clicking on them in applications just like you would with a web link. From the command line, use `xdg-open file[-line-column]://<path>[:line[:column]]`.
 
 ### Windows
 TODO
