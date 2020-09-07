@@ -51,7 +51,38 @@ duti -s org.dandavison.OpenInEditor file-line-column
 ```
 
 ### Linux
-TODO
+
+On a system that complies with the [XDG shared MIME-info DB specification](https://specifications.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-latest.html#idm140625828587776), you can follow the steps below. This should apply to the majority of current GNU/Linux installations - if you're unsure, run `type -P xdg-mime` and check that it returns a file path.
+
+1. Create the directory `~/.local/share/applications/`, if it doesn't exist already.
+
+2. Create the file `~/.local/share/applications/augmented-open.desktop` and add the following contents to it:
+   ```
+   [Desktop Entry]
+   Type=Application
+   Name=AugmentedOpen
+   GenericName=Open a file at a certain position
+   Comment=Opens URLs of the type file-line-column://<path>[:<line>[:<column>]] in the configured editor and positions the cursor
+   Icon=text-editor
+   Exec=open-in-editor %U
+   Categories=Utility;Core;
+   StartupNotify=false
+   MimeType=x-scheme-handler/file-line-column
+   ```
+
+3. Run the command
+   ```
+   xdg-mime default augmented-open.desktop x-scheme-handler/file-line-column
+   ```
+   This registers the `augmented-open.desktop` handler as the default handler for URLs using the `file-line-column://` protocol.
+
+The string used for the URL protocol is up to you: if you want to use `open-in-editor` to handle `file://` URLs, then replace `file-line-column` with `file` in the above instructions.
+
+If you want to register the URL handler system-wide (i.e. for _every_ user) then create the file at `/usr/local/...` instead of `~/.local/...`. You will need to use `sudo` to perform the commands since they will need root permissions.
+
+Remember to define the `EDITOR` or `OPEN_IN_EDITOR` environment variable, if you haven't already done so.
+
+You can now use these URLs by clicking on them in applications just like you would with a web link. From the command line, use `xdg-open file[-line-column]://<path>[:line[:column]]`.
 
 ### Windows
 TODO
