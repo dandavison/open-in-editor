@@ -102,6 +102,8 @@ class BaseEditor(object):
             sub_cls = VSCode
         elif "vim" in executable_path:
             sub_cls = Vim
+        elif "o" in executable_path:
+            sub_cls = O
         else:
             log(
                 "ERROR: failed to infer your editor. "
@@ -167,6 +169,13 @@ class Vim(BaseEditor):
     def visit_file(self, path, line, column):
         cmd = [self.executable, "+%s" % str(line)]
         cmd.extend(["-c", "normal %sl" % str(column - 1), path] if column > 1 else [path])
+        log(" ".join(cmd))
+        subprocess.check_call(cmd)
+
+
+class O(BaseEditor):
+    def visit_file(self, path, line, column):
+        cmd = [self.executable, path, "+%s" % str(line), "+%s" % str(column)]
         log(" ".join(cmd))
         subprocess.check_call(cmd)
 
