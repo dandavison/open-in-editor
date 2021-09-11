@@ -160,7 +160,7 @@ class Sublime(BaseEditor):
 
 class VSCode(BaseEditor):
     def visit_file(self, path, line, column):
-        cmd = [self.executable, "-g", "%s:%s" % (path, line)]
+        cmd = [self.executable, "-g", "%s:%s:%s" % (path, line, column)]
         log(" ".join(cmd))
         subprocess.check_call(cmd)
 
