@@ -41,7 +41,7 @@ If your editor/IDE isn't supported, then please open an issue. If your editor/ID
 
 Next, you need to register `open-in-editor` with your OS to act as the handler for the URL schemes you are going to use:
 
-### MacOS app
+### MacOS
 
 For MacOS, an application bundle `OpenInEditor.app` is provided.
 
@@ -49,6 +49,19 @@ Use [duti](https://github.com/moretension/duti) (`brew install duti`) to registe
 
 ```bash
 duti -s org.dandavison.OpenInEditor file-line-column
+```
+
+Alternatively, you can easily install `open-in-editor` with _[Homebrew](https://brew.sh) ([Cask](https://docs.brew.sh/Cask-Cookbook)), which already includes the above steps:_
+```rb
+brew tap dandavison/open-in-editor https://github.com/dandavison/open-in-editor.git
+brew install --cask open-in-editor
+```
+
+Also, if you keep a [_Brewfile_](https://github.com/Homebrew/homebrew-bundle#usage), you can add something like this:
+```rb
+repo = "dandavison/open-in-editor"
+tap repo, "https://github.com/#{repo}.git"
+cask "open-in-editor"
 ```
 
 ### Linux
