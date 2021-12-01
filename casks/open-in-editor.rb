@@ -1,6 +1,6 @@
 cask "open-in-editor" do
   version "1.0"
-  sha256 "29ef1f33f3837bac7b71d20c4c174095ba3c8c971e14a480e1b12a244eedd995"
+  sha256 "96ab091ea5f37d9b075ba61b11201464805eaf641af14482a295c664f1166965"
 
   github_user = "dandavison"
   url "https://github.com/#{github_user}/#{token}/archive/master.zip"
