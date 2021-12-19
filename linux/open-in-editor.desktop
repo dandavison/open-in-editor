@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=AugmentedOpen
+Name=OpenInEditor
 GenericName=Open a file at a certain position
 Comment=Opens URLs of the type file-line-column://<path>[:<line>[:<column>]] in the configured editor and positions the cursor
 Icon=text-editor
