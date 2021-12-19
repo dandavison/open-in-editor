@@ -64,6 +64,20 @@ tap repo, "https://github.com/#{repo}.git"
 cask "open-in-editor"
 ```
 
+### Arch Linux
+
+The Repository contains a pacman ``PKGBUILD`` file. To install it run from the root of the directory, or any directory that contains the ``PKGBUILD`` file.
+
+```sh
+makepkg --install
+```
+
+Then just register it with:
+
+```sh
+xdg-mime default open-in-editor.desktop x-scheme-handler/file-line-column
+```
+
 ### Linux
 
 On a system that complies with the [XDG shared MIME-info DB specification](https://specifications.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-latest.html#idm140625828587776), you can follow the steps below. This should apply to the majority of current GNU/Linux installations - if you're unsure, run `type -P xdg-mime` and check that it returns a file path.
