@@ -105,6 +105,8 @@ class BaseEditor(object):
             sub_cls = VSCode
         elif "vim" in executable_path:
             sub_cls = Vim
+        elif "hx" in executable_path:
+            sub_cls = Helix
         elif "o" in executable_path:
             sub_cls = O
         else:
@@ -172,6 +174,13 @@ class Vim(BaseEditor):
     def visit_file(self, path, line, column):
         cmd = [self.executable, "+%s" % str(line)]
         cmd.extend(["-c", "normal %sl" % str(column - 1), path] if column > 1 else [path])
+        log_debug(" ".join(cmd))
+        subprocess.check_call(cmd)
+
+
+class Helix(BaseEditor):
+    def visit_file(self, path, line, column):
+        cmd = [self.executable, "%s:%s:%s" % (path, line, column)]
         log_debug(" ".join(cmd))
         subprocess.check_call(cmd)
 
