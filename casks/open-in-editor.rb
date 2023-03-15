@@ -17,4 +17,9 @@ cask "open-in-editor" do
   }
 
   uninstall quit: bundle_id
+
+  zap trash: [
+    "~/Library/Saved Application State/org.dandavison.OpenInEditor.savedState",
+    "~/Library/Caches/org.dandavison.OpenInEditor",
+  ]
 end
