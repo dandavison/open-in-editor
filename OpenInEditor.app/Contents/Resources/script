@@ -153,7 +153,7 @@ class PyCharm(BaseEditor):
 
 class Sublime(BaseEditor):
     def visit_file(self, path, line, column):
-        cmd = [self.executable, "%s:%s" % (path, line)]
+        cmd = [self.executable, "%s:%s:%s" % (path, line, column)]
         log(" ".join(cmd))
         subprocess.check_call(cmd)
 
