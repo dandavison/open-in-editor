@@ -83,15 +83,13 @@ class BaseEditor(object):
     """
 
     @classmethod
-    def infer_from_environment_variables(cls):
+    def infer_editor_from_path(cls, path):
         """
-        Infer the editor type and its executable path heuristically from environment variables.
+        Infer the editor type and its executable path heuristically
         """
-        OPEN_IN_EDITOR, EDITOR = os.getenv("OPEN_IN_EDITOR"), os.getenv("EDITOR")
-        executable_path_with_arguments_maybe = OPEN_IN_EDITOR or EDITOR
         # 'Apps/VS Code - In.app/app/bin/code -arg'
         # ↓ up to last /     = '/Apps/VS Code - In.app/app/bin'
-        path_head, path_tail = os.path.split(executable_path_with_arguments_maybe)
+        path_head, path_tail = os.path.split(path)
         # after the last / ↑ = 'code -arg'
         path_bin = path_tail.split(' -')[0].strip() # remove ' -args' = 'code'
         path_head = path_head + os.sep if path_head else path_head # add / back if it existed
@@ -111,6 +109,16 @@ class BaseEditor(object):
             )
             sys.exit(1)
         return inferred_editor(executable_path)
+
+    @classmethod
+    def infer_from_environment_variables(cls):
+        """
+        Infer the editor type and its executable path heuristically from environment variables.
+        """
+        OPEN_IN_EDITOR, EDITOR = os.getenv("OPEN_IN_EDITOR"), os.getenv("EDITOR")
+        executable_path_with_arguments_maybe = OPEN_IN_EDITOR or EDITOR
+
+        return cls.infer_editor_from_path(executable_path_with_arguments_maybe)
 
     def __init__(self, executable):
         self.executable = executable
