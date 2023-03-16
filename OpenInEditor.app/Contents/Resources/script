@@ -93,23 +93,31 @@ class BaseEditor(object):
         except ValueError:
             executable_path = executable_path_with_arguments_maybe
         else:
-            executable_path = executable_path_with_arguments_maybe[:arguments_start].rstrip()
+            executable_path = executable_path_with_arguments_maybe[:arguments_start+1]
 
-        if "emacsclient" in executable_path:
-            sub_cls = Emacs
-        elif "subl" in executable_path:
-            sub_cls = Sublime
-        elif "charm" in executable_path:
-            sub_cls = PyCharm
-        elif "code" in executable_path:
-            sub_cls = VSCode
-        elif "vim" in executable_path:
-            sub_cls = Vim
-        elif "hx" in executable_path:
-            sub_cls = Helix
-        elif "o" in executable_path:
-            sub_cls = O
-        else:
+        editor_classes = {
+          "emacsclient" : Emacs,
+          "subl"        : Sublime,
+          "charm"       : PyCharm,
+          "code"        : VSCode,
+          "vim"         : Vim,
+          "hx"          : Helix,
+          "o"           : O,
+        }
+        sub_cls = None
+        if sub_cls is None: # match if editor path ends with the name of the editor
+            for bin_,class_ in editor_classes.items():
+                if executable_path.rstrip().endswith(bin_):
+                    sub_cls = class_
+        if sub_cls is None: # or if 'editor_bin_name ' is in editor path
+            for bin_,class_ in editor_classes.items():
+                if bin_ + ' ' in executable_path:
+                    sub_cls = class_
+        if sub_cls is None: # or if 'editor_bin_name'  is in editor path
+            for bin_,class_ in editor_classes.items():
+                if bin_       in executable_path.rstrip():
+                    sub_cls = class_
+        if sub_cls is None:
             log_error(
                 "ERROR: failed to infer your editor. "
                 "The values of the relevant environment variables are: "
@@ -119,7 +127,7 @@ class BaseEditor(object):
                 % (OPEN_IN_EDITOR, EDITOR)
             )
             sys.exit(1)
-        return sub_cls(executable_path)
+        return sub_cls(executable_path.rstrip())
 
     def __init__(self, executable):
         self.executable = executable
