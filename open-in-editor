@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: UTF-8 -*-
 """
 This code is all in one file, and supports Python 2, in order that it can be wrapped conveniently
 as a MacOS application bundle (e.g. using https://github.com/sveinbjornt/Platypus).
@@ -81,34 +82,22 @@ class BaseEditor(object):
     """
 
     @classmethod
-    def infer_from_environment_variables(cls):
+    def infer_editor_from_path(cls, path):
         """
-        Infer the editor type and its executable path heuristically from environment variables.
+        Infer the editor type and its executable path heuristically
         """
-        OPEN_IN_EDITOR, EDITOR = os.getenv("OPEN_IN_EDITOR"), os.getenv("EDITOR")
-        executable_path_with_arguments_maybe = OPEN_IN_EDITOR or EDITOR
-        try:
-            arguments_start = executable_path_with_arguments_maybe.index(" -")
-        except ValueError:
-            executable_path = executable_path_with_arguments_maybe
-        else:
-            executable_path = executable_path_with_arguments_maybe[:arguments_start].rstrip()
+        # 'Apps/VS Code - In.app/app/bin/code -arg'
+        # ↓ up to last /     = '/Apps/VS Code - In.app/app/bin'
+        path_head, path_tail = os.path.split(path)
+        # after the last / ↑ = 'code -arg'
+        path_bin = path_tail.split(' -')[0].strip() # remove ' -args' = 'code'
+        path_head = path_head + os.sep if path_head else path_head # add / back if it existed
+        executable_path = path_head + path_bin
 
-        if "emacsclient" in executable_path:
-            sub_cls = Emacs
-        elif "subl" in executable_path:
-            sub_cls = Sublime
-        elif "charm" in executable_path:
-            sub_cls = PyCharm
-        elif "code" in executable_path:
-            sub_cls = VSCode
-        elif "vim" in executable_path:
-            sub_cls = Vim
-        elif "hx" in executable_path:
-            sub_cls = Helix
-        elif "o" in executable_path:
-            sub_cls = O
-        else:
+        editors = [Emacs, Sublime, PyCharm, VSCode, Vim, Helix, O]
+
+        inferred_editor = next((ed for ed in editors if path_bin == ed.executable_name), None)
+        if inferred_editor is None:
             log_error(
                 "ERROR: failed to infer your editor. "
                 "The values of the relevant environment variables are: "
@@ -118,7 +107,17 @@ class BaseEditor(object):
                 % (OPEN_IN_EDITOR, EDITOR)
             )
             sys.exit(1)
-        return sub_cls(executable_path)
+        return inferred_editor(executable_path)
+
+    @classmethod
+    def infer_from_environment_variables(cls):
+        """
+        Infer the editor type and its executable path heuristically from environment variables.
+        """
+        OPEN_IN_EDITOR, EDITOR = os.getenv("OPEN_IN_EDITOR"), os.getenv("EDITOR")
+        executable_path_with_arguments_maybe = OPEN_IN_EDITOR or EDITOR
+
+        return cls.infer_editor_from_path(executable_path_with_arguments_maybe)
 
     def __init__(self, executable):
         self.executable = executable
@@ -128,6 +127,7 @@ class BaseEditor(object):
 
 
 class Emacs(BaseEditor):
+    executable_name = 'emacsclient'
     def visit_file(self, path, line, column):
         cmd = [
             self.executable,
@@ -149,6 +149,7 @@ class Emacs(BaseEditor):
 
 
 class PyCharm(BaseEditor):
+    executable_name = 'charm'
     def visit_file(self, path, line, column):
         cmd = [self.executable, "--line", str(line), path]
         log_info(" ".join(cmd))
@@ -156,6 +157,7 @@ class PyCharm(BaseEditor):
 
 
 class Sublime(BaseEditor):
+    executable_name = 'subl'
     def visit_file(self, path, line, column):
         cmd = [self.executable, "%s:%s:%s" % (path, line, column)]
         log_info(" ".join(cmd))
@@ -163,6 +165,7 @@ class Sublime(BaseEditor):
 
 
 class VSCode(BaseEditor):
+    executable_name = 'code'
     def visit_file(self, path, line, column):
         cmd = [self.executable, "-g", "%s:%s:%s" % (path, line, column)]
         log_info(" ".join(cmd))
@@ -170,6 +173,7 @@ class VSCode(BaseEditor):
 
 
 class Vim(BaseEditor):
+    executable_name = 'vim'
     def visit_file(self, path, line, column):
         cmd = [self.executable, "+%s" % str(line)]
         cmd.extend(["-c", "normal %sl" % str(column - 1), path] if column > 1 else [path])
@@ -178,6 +182,7 @@ class Vim(BaseEditor):
 
 
 class Helix(BaseEditor):
+    executable_name = 'hx'
     def visit_file(self, path, line, column):
         cmd = [self.executable, "%s:%s:%s" % (path, line, column)]
         log_info(" ".join(cmd))
@@ -185,6 +190,7 @@ class Helix(BaseEditor):
 
 
 class O(BaseEditor):
+    executable_name = 'o'
     def visit_file(self, path, line, column):
         cmd = [self.executable, path, "+%s" % str(line), "+%s" % str(column)]
         log_info(" ".join(cmd))
