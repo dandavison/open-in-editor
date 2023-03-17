@@ -26,18 +26,22 @@ open-in-editor 'file-line-column:///a/b/myfile.txt:7:77'
 Download the `open-in-editor` file from this repo and make it executable.
 
 Ensure that one of the environment variables `OPEN_IN_EDITOR` or `EDITOR` contains a path to an executable that `open-in-editor` is going to recognize. This environment variable must be set system-wide, not just in your shell process. For example, in MacOS, one does this with `launchctl setenv EDITOR /path/to/my/editor/executable`.
+To support terminal editors like `vim` ensure that environment variables `TERMINAL` is set to the path of the terminal executable that will open the editor.
 
-`open-in-editor` looks for any of the following substrings in the path: `emacsclient` (emacs), `subl` (sublime), `charm` (pycharm), `code` (vscode), `vim` (vim) or `o` (o). For example, any of the following values would work:
+`open-in-editor` looks for any of the following substrings in the editor path: `emacsclient` (emacs), `subl` (sublime), `charm` (pycharm), `code` (vscode), `vim` (vim) or `o` (o). For example, any of the following values would work:
 
 - `/usr/local/bin/emacsclient`
 - `/usr/local/bin/charm`
 - `/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl`
+- `/Applications/Visual Studio Code - Insiders.app/Contents/Resources/app/bin/code`
 - `/usr/local/bin/code`
 - `/usr/bin/vim`
 - `/usr/local/bin/nvim`
 - `/usr/bin/o`
 
-If your editor/IDE isn't supported, then please open an issue. If your editor/IDE is supported, but the above logic needs to be made more sophisticated, then either (a) open an issue, or (b) create a symlink that complies with the above rules.
+...and for any of the following substrings in the terminal path: `wezterm` (WezTerm)
+
+If your editor/IDE/terminal isn't supported, then please open an issue or file a PR. If your editor/IDE is supported, but the above logic needs to be made more sophisticated, then either (a) open an issue, or (b) create a symlink that complies with the above rules.
 
 Next, you need to register `open-in-editor` with your OS to act as the handler for the URL schemes you are going to use:
 
