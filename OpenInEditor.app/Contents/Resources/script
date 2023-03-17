@@ -16,8 +16,9 @@ except ImportError:
     # Python 2
     from urlparse import urlparse
 
-LOGFILE = "/tmp/open-in-editor.log"
-
+LOGFILE        = "/tmp/open-in-editor.log"
+OPEN_IN_EDITOR = os.getenv("OPEN_IN_EDITOR")
+EDITOR         = os.getenv("EDITOR")
 
 def main():
     try:
@@ -114,7 +115,6 @@ class BaseEditor(object):
         """
         Infer the editor type and its executable path heuristically from environment variables.
         """
-        OPEN_IN_EDITOR, EDITOR = os.getenv("OPEN_IN_EDITOR"), os.getenv("EDITOR")
         executable_path_with_arguments_maybe = OPEN_IN_EDITOR or EDITOR
 
         return cls.infer_editor_from_path(executable_path_with_arguments_maybe)
