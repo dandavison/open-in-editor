@@ -2,6 +2,16 @@ Open a local file from a URL at a line number in an editor/IDE.
 
 The idea is that you would register this application as a handler for certain URLs in your system.
 
+--
+
+*Please note that VSCode, IntelliJ, and Pycharm all install their own URL handlers for opening files: use these instead of this project! They open the files much more quickly and avoid all the hassle of configuring this project. For VSCode see [docs](https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls), but the TL;DR is:*
+```
+idea://open?file={absolute-path}&line={line-number}
+pycharm://open?file={absolute-path}&line={line-number}
+vscode://file/{absolute-path}:{line-number}
+```
+--
+
 The URL must be structured like a [file URL](https://en.wikipedia.org/wiki/File_URI_scheme), but it may optionally have a `:<line>:<column>` suffix. If the line is present, the editor will open the file at that line. (Column is currently only implemented for vim.)
 
 The URL scheme (protocol) is ignored. For example, you could use standard `file://` URLs, or you could use a custom URL scheme that only exists in your system. In either case, you must register `open-in-editor` (or the provided MacOS application) with your OS as the handler for that URL scheme.
@@ -36,7 +46,6 @@ Ensure that one of the environment variables `OPEN_IN_EDITOR` or `EDITOR` contai
 - `/usr/local/bin/nvim`
 - `/usr/bin/o`
 
-VSCode (`code`) is also supported, but I recommend using the [dedicated URL handler](https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls) that ships with VSCode. This results in a much faster file-opening experience (at least on MacOS), as well as avoiding the hassle of setting this project up.
 
 If your editor/IDE isn't supported, then please open an issue. If your editor/IDE is supported, but the above logic needs to be made more sophisticated, then either (a) open an issue, or (b) create a symlink that complies with the above rules.
 
