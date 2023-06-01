@@ -61,6 +61,10 @@ Use [duti](https://github.com/moretension/duti) (`brew install duti`) to registe
 duti -s org.dandavison.OpenInEditor file-line-column
 ```
 
+If you need to rebuild the MacOS application bundle, you can do so using [Platypus](https://github.com/sveinbjornt/Platypus), with settings like this:
+
+<img width="662" alt="image" src="https://github.com/dandavison/open-in-editor/assets/52205/8a9b5019-a3b7-4ba0-9537-74d410eccbe8">
+
 Alternatively, you can easily install `open-in-editor` with _[Homebrew](https://brew.sh) ([Cask](https://docs.brew.sh/Cask-Cookbook)), which already includes the above steps:_
 ```rb
 brew tap dandavison/open-in-editor https://github.com/dandavison/open-in-editor.git
