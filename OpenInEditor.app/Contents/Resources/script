@@ -95,7 +95,7 @@ class BaseEditor(object):
         path_head = path_head + os.sep if path_head else path_head # add / back if it existed
         executable_path = path_head + path_bin
 
-        editors = [Emacs, Sublime, PyCharm, VSCode, Vim, Helix, O]
+        editors = [Emacs, Sublime, PyCharm, VSCode, Vim, Helix, Zed, O]
 
         inferred_editor = next((ed for ed in editors if path_bin == ed.executable_name), None)
         if inferred_editor is None:
@@ -183,6 +183,14 @@ class Vim(BaseEditor):
 
 class Helix(BaseEditor):
     executable_name = 'hx'
+    def visit_file(self, path, line, column):
+        cmd = [self.executable, "%s:%s:%s" % (path, line, column)]
+        log_info(" ".join(cmd))
+        subprocess.check_call(cmd)
+
+
+class Zed(BaseEditor):
+    executable_name = 'zed'
     def visit_file(self, path, line, column):
         cmd = [self.executable, "%s:%s:%s" % (path, line, column)]
         log_info(" ".join(cmd))
