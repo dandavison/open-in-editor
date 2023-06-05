@@ -11,10 +11,11 @@ import subprocess
 import sys
 
 try:
-    from urllib.parse import urlparse
+    from urllib.parse import urlparse, unquote
 except ImportError:
     # Python 2
     from urlparse import urlparse
+    from urllib   import unquote
 
 LOGFILE        = "/tmp/open-in-editor.log"
 OPEN_IN_EDITOR = os.getenv("OPEN_IN_EDITOR")
@@ -53,7 +54,7 @@ def parse_url(url):  # type: (str) -> (str, Optional[int], Optional[int]):
     >>> parse_url("file://localhost/a/b/myfile.txt:7:77")
     ('/a/b/myfile.txt', 7, 77)
     """
-    path, _, line_and_column = urlparse(url).path.partition(":")
+    path, _, line_and_column = urlparse(unquote(url)).path.partition(":")
     line, _, column = line_and_column.partition(":")
     try:
         line = int(line)
