@@ -22,7 +22,8 @@ EDITOR         = os.getenv("EDITOR")
 
 def main():
     try:
-        editor = BaseEditor.infer_from_environment_variables()
+        # editor = BaseEditor.infer_from_environment_variables()
+        editor = Zed("/Users/ddavison/bin/zed")
         (url,) = sys.argv[1:]
         path, line, column = parse_url(url)
         log_info("path=%s line=%s column=%s" % (path, line, column))
